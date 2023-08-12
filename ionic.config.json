@@ -1,0 +1,7 @@
+{
+  "name": "referly",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
