@@ -1,0 +1,14 @@
+<div class="container">
+  <input
+    type="file"
+    name="fileinput"
+    id="file-input"
+    (change)="onFileUpload($event)"
+  />
+  <div class="output">
+    <p>Tesseract :</p>
+    <p>{{ tesseractOutput }}</p>
+  </div>
+  <button (click)="saveToDB()">Save output to DB</button>
+  <div>{{ dbContent }}</div>
+</div>

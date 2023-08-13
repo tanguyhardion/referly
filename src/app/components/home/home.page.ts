@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+
 import * as Tesseract from 'tesseract.js';
+import { SQLiteService } from 'src/app/services/sqlite.service';
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 
 @Component({
   selector: 'app-home',
@@ -11,9 +14,23 @@ import * as Tesseract from 'tesseract.js';
 })
 export class HomePage implements OnInit {
   tesseractOutput: string;
+  dbContent: string;
 
-  constructor() {
+  constructor(
+    private sqliteService: SQLiteService,
+    private sqliteDBConnection: SQLiteDBConnection
+  ) {
     this.tesseractOutput = '';
+    this.dbContent = '';
+    this.sqliteService.initializePlugin();
+    this.sqliteService
+      .openDatabase('referly.db', false, 'secret', 1, false)
+      .then((db: any) => {
+        this.sqliteDBConnection = db;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   ngOnInit(): void {
@@ -35,5 +52,8 @@ export class HomePage implements OnInit {
             'The image could not be read, please try again with a clearer picture.';
         });
     }
+  }
+
+  saveToDB() {
   }
 }
