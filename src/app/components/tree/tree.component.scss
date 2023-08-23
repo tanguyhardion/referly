@@ -1,0 +1,21 @@
+.mat-mdc-form-field {
+  margin-right: 4px;
+}
+
+mat-tree-node {
+  word-wrap: break-word;
+}
+
+.category-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  margin-top: 20px;
+
+  button {
+    width: fit-content;
+    border-radius: 20px;
+    padding: 20px;
+  }
+}

@@ -1,0 +1,66 @@
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- standard node -->
+  <mat-tree-node
+    *matTreeNodeDef="let node"
+    matTreeNodeToggle
+    matTreeNodePadding
+  >
+    {{ node.item }}
+  </mat-tree-node>
+
+  <!-- nodes with no content -->
+  <mat-tree-node
+    *matTreeNodeDef="let node; when: hasNoContent"
+    matTreeNodePadding
+  >
+    <mat-form-field>
+      <mat-label>Nouvel élément...</mat-label>
+      <input matInput #itemValue placeholder="Économie, finance..." />
+    </mat-form-field>
+    <button mat-button (click)="saveNode(node, itemValue.value)">Save</button>
+  </mat-tree-node>
+
+  <!-- expanded or collapsed nodes -->
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+    <button
+      mat-icon-button
+      matTreeNodeToggle
+      [attr.aria-label]="'Toggle ' + node.item"
+    >
+      <mat-icon>
+        {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+      </mat-icon>
+    </button>
+    {{ node.item }}
+    <button mat-icon-button (click)="addNewItem(node)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-tree-node>
+
+  <mat-tree-node
+    *matTreeNodeDef="let node; when: isCategory"
+    matTreeNodePadding
+  >
+    <button mat-icon-button matTreeNodeToggle>
+      <mat-icon>
+        {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+      </mat-icon>
+    </button>
+
+    {{ node.item }}
+
+    <button mat-icon-button (click)="addNewItem(node)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-tree-node>
+</mat-tree>
+
+<div class="category-container">
+  <mat-form-field>
+    <mat-label>Nouvelle catégorie...</mat-label>
+    <input matInput #itemValue placeholder="Presse, littérature..." />
+  </mat-form-field>
+  <button mat-button (click)="addCategory(itemValue.value)">
+    Ajouter
+  </button>
+</div>
