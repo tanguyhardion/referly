@@ -12,21 +12,9 @@ import { TodoItemNode } from './todo-item-node';
 export class ChecklistDatabase {
   dataChange = new BehaviorSubject<TodoItemNode[]>([]);
   TREE_DATA = {
-    // category
-    Groceries: [
-      // item
-      'Almond Meal flour',
-      'Organic eggs',
-      'Protein Powder',
-      'Protein Bars',
-    ],
-    // category
-    Reminders: [
-      // item
-      'Cook dinner',
-      'Read the Material Design spec',
-      'Upgrade Application to Angular',
-    ],
+    Default: [
+      'Some Item',
+    ]
   };
 
   get data(): TodoItemNode[] {
@@ -40,7 +28,7 @@ export class ChecklistDatabase {
   initialize() {
     const data = this.buildFileTree(this.TREE_DATA, 0);
 
-    // Notify the change.
+    // notify the change
     this.dataChange.next(data);
   }
 

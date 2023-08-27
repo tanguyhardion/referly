@@ -27,13 +27,14 @@
       matTreeNodeToggle
       [attr.aria-label]="'Toggle ' + node.item"
     >
-      <mat-icon>
-        {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
-      </mat-icon>
+      <img
+        [src]="treeControl.isExpanded(node) ? '/assets/icon/expand_more.svg' : '/assets/icon/chevron_right.svg'"
+        alt=""
+      />
     </button>
     {{ node.item }}
     <button mat-icon-button (click)="addNewItem(node)">
-      <mat-icon>add</mat-icon>
+      <img src="/assets/icon/add.svg" alt="" />
     </button>
   </mat-tree-node>
 
@@ -42,15 +43,16 @@
     matTreeNodePadding
   >
     <button mat-icon-button matTreeNodeToggle>
-      <mat-icon>
-        {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
-      </mat-icon>
+      <img
+        [src]="treeControl.isExpanded(node) ? '/assets/icon/expand_more.svg' : '/assets/icon/chevron_right.svg'"
+        alt=""
+      />
     </button>
 
     {{ node.item }}
 
     <button mat-icon-button (click)="addNewItem(node)">
-      <mat-icon>add</mat-icon>
+      <img src="/assets/icon/add.svg" alt="" />
     </button>
   </mat-tree-node>
 </mat-tree>
@@ -60,7 +62,5 @@
     <mat-label>Nouvelle catégorie...</mat-label>
     <input matInput #itemValue placeholder="Presse, littérature..." />
   </mat-form-field>
-  <button mat-button (click)="addCategory(itemValue.value)">
-    Ajouter
-  </button>
+  <button mat-button (click)="addCategory(itemValue.value)">Ajouter</button>
 </div>
