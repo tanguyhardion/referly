@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { TodoItemNode } from './todo-item-node';
+import { StorageService } from '../service/storage.service';
+import { Item } from './item';
+import { TodoItemFlatNode } from './todo-item-flat-node';
 
 /**
  * Checklist database, it can build a tree structured Json object.
@@ -11,22 +14,33 @@ import { TodoItemNode } from './todo-item-node';
 @Injectable()
 export class ChecklistDatabase {
   dataChange = new BehaviorSubject<TodoItemNode[]>([]);
+  item1 = new Item('item1', 'content1', []);
+  item2 = new Item('item2', 'content2', []);
+  item3 = new Item('item3', 'content3', []);
+  item4 = new Item('item4', 'content4', []);
+  item5 = new Item('item5', 'content5', []);
   TREE_DATA = {
-    Default: [
-      'Some Item',
-    ]
+    Category: {
+      'SubCategory 1': [this.item1.name, this.item2.name],
+    },
+    Category2: {
+      'SubCategory 2': [this.item3.name, this.item4.name],
+    },
+    Category3: {
+      'SubCategory 3': [this.item5.name],
+    },
   };
 
   get data(): TodoItemNode[] {
     return this.dataChange.value;
   }
 
-  constructor() {
+  constructor(private storageService: StorageService) {
     this.initialize();
   }
 
-  initialize() {
-    const data = this.buildFileTree(this.TREE_DATA, 0);
+  async initialize() {
+    const data = this.buildFileTree(await this.storageService.getRoot(), 0);
 
     // notify the change
     this.dataChange.next(data);
@@ -54,27 +68,57 @@ export class ChecklistDatabase {
     }, []);
   }
 
-  /**
-   * Add an item to to-do list
-   */
-  insertItem(parent: TodoItemNode, name: string) {
-    if (parent.children) {
-      parent.children.push({ item: name } as TodoItemNode);
-      this.dataChange.next(this.data);
-    }
-  }
-
-  insertCategory(name: string) {
+  addCategory(name: string) {
     this.data.push({
       item: name,
       isCategory: true,
       children: [],
     } as TodoItemNode);
     this.dataChange.next(this.data);
+    this.storageService.addCategory(name);
   }
 
-  updateItem(node: TodoItemNode, name: string) {
+  /**
+   * Add a sub-category
+   */
+  addSubCategory(parent: TodoItemNode, name: string) {
+    if (parent.children) {
+      parent.children.push({ item: name } as TodoItemNode);
+      this.dataChange.next(this.data);
+      this.storageService.addSubCategory(parent.item, {
+        name: name,
+        items: [],
+      });
+    }
+  }
+
+  /**
+   * Add an item to to-do list
+   */
+  addItem(parent: TodoItemNode, name: string) {
+    if (parent.children) {
+      parent.children.push({ item: name } as TodoItemNode);
+      this.dataChange.next(this.data);
+      this.storageService.addItem(parent.item, name, {
+        name: name,
+        content: '',
+        keywords: [],
+      });
+    }
+  }
+
+  updateItem(parentNode: TodoItemFlatNode, node: TodoItemNode, name: string) {
     node.item = name;
+    this.dataChange.next(this.data);
+    this.storageService.addItem(parentNode.item, node.item, {
+      name: node.item,
+      content: '',
+      keywords: [],
+    });
+  }
+
+  clear() {
+    this.storageService.clear();
     this.dataChange.next(this.data);
   }
 }

@@ -130,12 +130,15 @@ export class TreeComponent {
     return null;
   }
 
-  /**
-   * Select the category so we can insert the new item
-   */
-  addNewItem(node: TodoItemFlatNode) {
+  insertCategory(name: string) {
+    if (name !== '') {
+      this._database.addCategory(name);
+    }
+  }
+
+  insertNewSubCategory(node: TodoItemFlatNode) {
     const parentNode = this.flatNodeMap.get(node);
-    this._database.insertItem(parentNode!, '');
+    this._database.addSubCategory(parentNode!, '');
     this.treeControl.expand(node);
   }
 
@@ -144,12 +147,11 @@ export class TreeComponent {
    */
   saveNode(node: TodoItemFlatNode, itemValue: string) {
     const nestedNode = this.flatNodeMap.get(node);
-    this._database.updateItem(nestedNode!, itemValue);
+    const parentNode = this.getParentNode(node);
+    this._database.updateItem(parentNode!, nestedNode!, itemValue);
   }
 
-  addCategory(name: string) {
-    if (name !== '') {
-      this._database.insertCategory(name);
-    }
+  clearTree() {
+    this._database.clear();
   }
 }
