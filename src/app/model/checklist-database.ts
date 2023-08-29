@@ -47,7 +47,7 @@ export class ChecklistDatabase {
   }
 
   /**
-   * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
+   * Build the file structure tree. The `value` is the JSON object, or a sub-tree of a JSON object.
    * The return value is the list of `TodoItemNode`.
    */
   buildFileTree(obj: { [key: string]: any }, level: number): TodoItemNode[] {

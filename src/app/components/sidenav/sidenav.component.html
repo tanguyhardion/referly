@@ -4,9 +4,16 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <button class="menu-button" mat-icon-button aria-label="Menu" (click)="sidenav.toggle()">
-      <img src="/assets/icon/menu.svg" alt="">
-    </button>
+    <mat-toolbar class="toolbar" color="primary">
+      <button
+        class="menu-button"
+        mat-icon-button
+        aria-label="Menu"
+        (click)="sidenav.toggle()"
+      >
+        <img src="/assets/icon/menu.svg" alt="" />
+      </button>
+    </mat-toolbar>
 
     <ion-router-outlet></ion-router-outlet>
   </mat-sidenav-content>
