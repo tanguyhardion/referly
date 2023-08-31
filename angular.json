@@ -36,7 +36,11 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss",
+              "node_modules/ngx-spinner/animations/ball-clip-rotate-multiple.css"
+            ],
             "scripts": []
           },
           "configurations": {

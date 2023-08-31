@@ -37,6 +37,7 @@
     "@types/tesseract.js": "^2.0.0",
     "ionicons": "^7.0.0",
     "nanoid": "^4.0.2",
+    "ngx-spinner": "^16.0.2",
     "rxjs": "~7.8.0",
     "tesseract.js": "^4.1.1",
     "tslib": "^2.3.0",
