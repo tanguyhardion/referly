@@ -101,6 +101,24 @@ export class StorageService {
     return await this.set('root', root);
   }
 
+  async updateReference(item: Item): Promise<any> {
+    const root = await this.getRoot();
+    for (const category in root) {
+      for (const subCategory in root[category]) {
+        root[category][subCategory].items = root[category][
+          subCategory
+        ].items.map((i: Item) => {
+          if (i.name === item.name) {
+            return item;
+          } else {
+            return i;
+          }
+        });
+      }
+    }
+    return await this.set('root', root);
+  }
+
   async removeReference(item: Item): Promise<any> {
     const root = await this.getRoot();
     for (const category in root) {

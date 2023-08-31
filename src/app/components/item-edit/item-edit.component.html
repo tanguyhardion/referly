@@ -12,8 +12,8 @@
       placeholder="Prends une photo pour voir son texte apparaître ici..."
       class="content"
       [value]="item.content"
+      [(ngModel)]="item.content"
+      (ngModelChange)="onTextChange($event)"
     ></textarea>
-    <!-- [(ngModel)]="note.content"
-            (ngModelChange)="onTextChange($event)" -->
   </mat-form-field>
 </div>
