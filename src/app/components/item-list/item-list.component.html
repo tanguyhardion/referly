@@ -1,14 +1,20 @@
 <div class="container">
-  <span class="items-length">{{
-    items.length !== 0
-      ? items.length > 1
-        ? items.length + " Références"
-        : "1 référence"
-      : "Aucune référence"
-  }}</span>
+  <span class="items-length" *ngIf="items$ | async as items">
+    {{
+      items.length !== 0
+        ? items.length > 1
+          ? items.length + " Références"
+          : "1 référence"
+        : "Aucune référence"
+    }}
+  </span>
 
-  <item *ngFor="let item of items" [item]="item"></item>
-  <p class="guide" *ngIf="!items.length">Appuie sur le bouton en bas à gauche pour lire et ajouter une référence</p>
+  <div class="list-items">
+    <item *ngFor="let item of items$ | async" [item]="item"></item>
+  </div>
+  <p class="guide" *ngIf="!(items$ | async)?.length">
+    Appuie sur le bouton en bas à gauche pour lire et ajouter une référence
+  </p>
   <button class="add-fab" mat-fab color="primary" (click)="onFabClick()">
     <mat-icon>add</mat-icon>
   </button>

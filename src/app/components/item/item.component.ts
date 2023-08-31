@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 
 import { Item } from 'src/app/model/item';
 import { Router } from '@angular/router';
+import { StorageService } from 'src/app/service/storage.service';
 
 @Component({
   selector: 'item',
@@ -16,9 +17,13 @@ import { Router } from '@angular/router';
 export class ItemComponent {
   @Input() item: Item;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private storageService: StorageService) {}
 
   onClick(): void {
     this.router.navigate(['edit', this.item.name]);
+  }
+
+  onDelete(): void {
+    this.storageService.removeReference(this.item);
   }
 }

@@ -1,5 +1,11 @@
 .container {
   margin: 80px 30px;
+  height: 100%;
+}
+
+.list-items {
+  max-height: calc(100vh - 200px);
+  overflow-y: scroll;
 }
 
 .add-fab {

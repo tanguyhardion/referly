@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
-import { createWorker } from 'tesseract.js';
+// import { createWorker } from 'tesseract.js';
 
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   constructor() {}
 
   async ngOnInit(): Promise<void> {
-    // tesseract warmup
+    /* // tesseract warmup
     const worker = await createWorker();
 
     await worker.loadLanguage('eng');
@@ -25,6 +25,6 @@ export class AppComponent implements OnInit {
       'https://tesseract.projectnaptha.com/img/eng_bw.png'
     );
 
-    await worker.terminate();
+    await worker.terminate(); */
   }
 }

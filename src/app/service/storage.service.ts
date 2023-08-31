@@ -90,6 +90,29 @@ export class StorageService {
     return await this.set('root', root);
   }
 
+  async addReference(
+    category: string,
+    subCategory: SubCategory,
+    item: Item
+  ): Promise<any> {
+    const root = await this.getRoot();
+    const categoryObj = await root[category];
+    categoryObj[subCategory.name].items.push(item);
+    return await this.set('root', root);
+  }
+
+  async removeReference(item: Item): Promise<any> {
+    const root = await this.getRoot();
+    for (const category in root) {
+      for (const subCategory in root[category]) {
+        root[category][subCategory].items = root[category][
+          subCategory
+        ].items.filter((i: Item) => i.name !== item.name);
+      }
+    }
+    return await this.set('root', root);
+  }
+
   async export(): Promise<string> {
     const root = await this.getRoot();
     return JSON.stringify(root);

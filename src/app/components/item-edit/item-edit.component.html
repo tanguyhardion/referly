@@ -1,8 +1,9 @@
 <div class="container" *ngIf="item">
   <div>
-    <span *ngFor="let keyword of item.keywords; let last = last"
-      >{{ keyword }}<span *ngIf="!last">, </span></span
-    >
+    <span *ngFor="let keyword of item.keywords; let last = last">
+      {{ keyword }}
+      <span *ngIf="!last">, </span>
+    </span>
   </div>
   <mat-form-field appearance="outline">
     <mat-label>Contenu</mat-label>
@@ -10,6 +11,7 @@
       matInput
       placeholder="Prends une photo pour voir son texte apparaître ici..."
       class="content"
+      [value]="item.content"
     ></textarea>
     <!-- [(ngModel)]="note.content"
             (ngModelChange)="onTextChange($event)" -->

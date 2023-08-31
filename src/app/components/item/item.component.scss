@@ -2,6 +2,11 @@ mat-card {
   margin: 16px 0;
 }
 
+mat-card-header,
+mat-card-content {
+  cursor: pointer;
+}
+
 button {
   width: fit-content;
   border-radius: 20px;
