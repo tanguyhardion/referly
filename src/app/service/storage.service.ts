@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Item } from '../model/item';
 import { SubCategory } from '../model/sub-category';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
   private _storage: Storage | null = null;
+  private itemsSubject: Subject<Item[]> = new Subject<Item[]>(); // Use Subject or BehaviorSubject
 
   constructor(private storage: Storage) {
     this.init().then();
@@ -39,9 +41,12 @@ export class StorageService {
     return await this.set('root', root);
   }
 
-  async getItems(category: string, subCategory: SubCategory): Promise<Item[]> {
-    const root = await this.getRoot();
-    return root[category][subCategory.name].items;
+  getItems(category: string, subCategory: SubCategory): Observable<Item[]> {
+    this.getRoot().then((root) => {
+      const items = root[category][subCategory.name].items;
+      this.itemsSubject.next(items);
+    });
+    return from(this.getItemsFromStorage(category, subCategory));
   }
 
   async getItem(
@@ -96,9 +101,29 @@ export class StorageService {
     item: Item
   ): Promise<any> {
     const root = await this.getRoot();
-    const categoryObj = await root[category];
+    const categoryObj = root[category];
     categoryObj[subCategory.name].items.push(item);
-    return await this.set('root', root);
+
+    await this.set('root', root);
+    await this.emitItemsUpdate(category, subCategory);
+  }
+
+  private async emitItemsUpdate(category: string, subCategory: SubCategory) {
+    const updatedItems = this.getItemsFromStorage(category, subCategory);
+    this.itemsSubject.next(await updatedItems);
+  }
+
+  private async getItemsFromStorage(
+    category: string,
+    subCategory: SubCategory
+  ): Promise<Item[]> {
+    const root = await this.getRoot();
+    const categoryObj = await root[category];
+    return categoryObj[subCategory.name].items;
+  }
+
+  getItemsObservable(): Observable<Item[]> {
+    return this.itemsSubject.asObservable();
   }
 
   async updateReference(item: Item): Promise<any> {

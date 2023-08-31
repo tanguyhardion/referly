@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
+
 import { Item } from 'src/app/model/item';
 import { StorageService } from 'src/app/service/storage.service';
 import { SelectedNodeService } from 'src/app/service/selected-node.service';
@@ -49,8 +50,8 @@ export class ItemEditComponent {
       this.storageService.updateReference(this.item);
     });
   }
-  onTextChange(event: Event): void {
-    this.item.content = (event.target as HTMLInputElement).value;
+
+  onTextChange(): void {
     this.onTextChangeSubject.next();
   }
 }

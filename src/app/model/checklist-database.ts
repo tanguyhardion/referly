@@ -99,7 +99,7 @@ export class ChecklistDatabase {
     this.dataChange.next(this.data);
     this.storageService.addItem(
       parentNode.item,
-      new SubCategory(node.item, [new Item('NAME', 'CONTENT', ['KW1', 'KW2'])]),
+      new SubCategory(node.item, []),
       new Item(name, '', [])
     );
   }

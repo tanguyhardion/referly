@@ -22,17 +22,15 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.selectedNodeService.getSelectedNode().subscribe(async (node) => {
-      this.hasSelectedNode = !!(
-        node && (await this.updateSelectedNodeStatus(node))
-      );
+      this.hasSelectedNode = !!(node && this.updateSelectedNodeStatus(node));
     });
   }
 
   private async updateSelectedNodeStatus(node: any): Promise<boolean> {
-    const items = await this.storageService.getItems(
-      node.category,
-      node.subCategory
-    );
-    return items.length > 0;
+    let hasItems = false;
+    await this.storageService.getItems(node.category, node.subCategory).toPromise().then(items => {
+      hasItems = items!.length > 0;
+    });
+    return hasItems;
   }
 }

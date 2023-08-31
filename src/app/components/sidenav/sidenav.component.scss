@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Averia+Libre&display=swap");
+
 .container {
   height: 100vh;
 
@@ -8,5 +10,13 @@
 
   .menu-button {
     z-index: 1;
+  }
+
+  .title {
+    font-size: 22px;
+    font-family: "Averia Libre", cursive;
+    flex: 1 1;
+    text-align: center;
+    margin-right: 40px;
   }
 }
