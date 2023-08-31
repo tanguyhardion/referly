@@ -1,1 +1,16 @@
-<p>item works!</p>
+<mat-card>
+  <mat-card-header (click)="onClick()">
+    <mat-card-subtitle>{{ item.keywords }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content (click)="onClick()">
+    <p>
+      {{ item.content | slice : 0 : 100
+      }}{{ item.content.length > 100 ? "..." : "" }}
+    </p>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button>Supprimer</button>
+  </mat-card-actions>
+</mat-card>

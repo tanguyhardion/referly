@@ -5,6 +5,7 @@ import { TodoItemNode } from './todo-item-node';
 import { StorageService } from '../service/storage.service';
 import { Item } from './item';
 import { TodoItemFlatNode } from './todo-item-flat-node';
+import { SubCategory } from './sub-category';
 
 /**
  * Checklist database, it can build a tree structured Json object.
@@ -14,11 +15,12 @@ import { TodoItemFlatNode } from './todo-item-flat-node';
 @Injectable()
 export class ChecklistDatabase {
   dataChange = new BehaviorSubject<TodoItemNode[]>([]);
-  item1 = new Item('item1', 'content1', []);
+  /* item1 = new Item('item1', 'content1', []);
   item2 = new Item('item2', 'content2', []);
   item3 = new Item('item3', 'content3', []);
   item4 = new Item('item4', 'content4', []);
   item5 = new Item('item5', 'content5', []);
+
   TREE_DATA = {
     Category: {
       'SubCategory 1': [this.item1.name, this.item2.name],
@@ -29,7 +31,7 @@ export class ChecklistDatabase {
     Category3: {
       'SubCategory 3': [this.item5.name],
     },
-  };
+  }; */
 
   get data(): TodoItemNode[] {
     return this.dataChange.value;
@@ -51,21 +53,21 @@ export class ChecklistDatabase {
    * The return value is the list of `TodoItemNode`.
    */
   buildFileTree(obj: { [key: string]: any }, level: number): TodoItemNode[] {
-    return Object.keys(obj).reduce<TodoItemNode[]>((accumulator, key) => {
-      const value = obj[key];
-      const node = new TodoItemNode();
-      node.item = key;
+    if (!obj) return [];
 
-      if (value != null) {
-        if (typeof value === 'object') {
+    return Object.entries(obj).reduce<TodoItemNode[]>(
+      (accumulator, [key, value]) => {
+        const node = new TodoItemNode();
+        node.item = typeof value === 'object' ? key : value;
+
+        if (typeof value === 'object' && level !== 1) {
           node.children = this.buildFileTree(value, level + 1);
-        } else {
-          node.item = value;
         }
-      }
 
-      return accumulator.concat(node);
-    }, []);
+        return accumulator.concat(node);
+      },
+      []
+    );
   }
 
   addCategory(name: string) {
@@ -85,40 +87,44 @@ export class ChecklistDatabase {
     if (parent.children) {
       parent.children.push({ item: name } as TodoItemNode);
       this.dataChange.next(this.data);
-      this.storageService.addSubCategory(parent.item, {
-        name: name,
-        items: [],
-      });
-    }
-  }
-
-  /**
-   * Add an item to to-do list
-   */
-  addItem(parent: TodoItemNode, name: string) {
-    if (parent.children) {
-      parent.children.push({ item: name } as TodoItemNode);
-      this.dataChange.next(this.data);
-      this.storageService.addItem(parent.item, name, {
-        name: name,
-        content: '',
-        keywords: [],
-      });
+      this.storageService.addSubCategory(
+        parent.item,
+        new SubCategory(name, [])
+      );
     }
   }
 
   updateItem(parentNode: TodoItemFlatNode, node: TodoItemNode, name: string) {
     node.item = name;
     this.dataChange.next(this.data);
-    this.storageService.addItem(parentNode.item, node.item, {
-      name: node.item,
-      content: '',
-      keywords: [],
-    });
+    this.storageService.addItem(
+      parentNode.item,
+      new SubCategory(node.item, [new Item('NAME', 'CONTENT', ['KW1', 'KW2'])]),
+      new Item(name, '', [])
+    );
   }
+
+  /**
+   * Add an item to to-do list
+   */
+  /* addItem(parent: TodoItemNode, name: string) {
+    if (parent.children) {
+      parent.children.push({ item: name } as TodoItemNode);
+      this.dataChange.next(this.data);
+      this.storageService.addItem(parent.item, new SubCategory(name, []), {
+        name: name,
+        content: '',
+        keywords: [],
+      });
+    }
+  } */
 
   clear() {
     this.storageService.clear();
     this.dataChange.next(this.data);
+  }
+
+  async export(): Promise<string> {
+    return await this.storageService.export();
   }
 }

@@ -1,5 +1,15 @@
-<span class="items-length">{{ items.length }} références</span>
-<item *ngFor="let item of items"> [item] = {{ item }} </item>
-<button class="add-fab" mat-fab>
-  <mat-icon>add</mat-icon>
-</button>
+<div class="container">
+  <span class="items-length">{{
+    items.length !== 0
+      ? items.length > 1
+        ? items.length + " Références"
+        : "1 référence"
+      : "Aucune référence"
+  }}</span>
+
+  <item *ngFor="let item of items" [item]="item"></item>
+  <p class="guide" *ngIf="!items.length">Appuie sur le bouton en bas à gauche pour lire et ajouter une référence</p>
+  <button class="add-fab" mat-fab color="primary" (click)="onFabClick()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

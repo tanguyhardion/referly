@@ -5,11 +5,12 @@
     *matTreeNodeDef="let node"
     matTreeNodeToggle
     matTreeNodePadding
+    (click)="onNodeSelected(node)"
   >
     {{ node.item }}
   </mat-tree-node>
 
-  <!-- nodes with no content -->
+  <!-- nodes with no content : subCategories -->
   <mat-tree-node
     *matTreeNodeDef="let node; when: hasNoContent"
     matTreeNodePadding
@@ -38,7 +39,7 @@
       />
     </button>
     {{ node.item }}
-    <button mat-icon-button (click)="insertNewSubCategory(node)">
+    <button mat-icon-button (click)="insertSubCategory(node)">
       <img src="/assets/icon/add.svg" alt="" />
     </button>
   </mat-tree-node>
@@ -60,7 +61,7 @@
 
     {{ node.item }}
 
-    <button mat-icon-button (click)="insertNewSubCategory(node)">
+    <button mat-icon-button (click)="insertSubCategory(node)">
       <img src="/assets/icon/add.svg" alt="" />
     </button>
   </mat-tree-node>
@@ -76,4 +77,8 @@
 
 <div>
   <button mat-button (click)="clearTree()">Clear</button>
+</div>
+
+<div>
+  <button mat-button (click)="export()">Exporter</button>
 </div>

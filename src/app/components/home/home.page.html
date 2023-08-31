@@ -1,3 +1,2 @@
-<div class="container">
-  <item-list></item-list>
-</div>
+<item-list *ngIf="hasSelectedNode"></item-list>
+<p class="guide" *ngIf="!hasSelectedNode">Aucune sous-catégorie sélectionnée</p>

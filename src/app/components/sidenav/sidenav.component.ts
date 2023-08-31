@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { TreeComponent } from '../tree/tree.component';
@@ -22,4 +22,10 @@ import { TreeComponent } from '../tree/tree.component';
     TreeComponent,
   ],
 })
-export class SidenavComponent {}
+export class SidenavComponent {
+  @ViewChild('sidenav') sidenav: MatSidenav;
+
+  toggle() {
+    this.sidenav.toggle();
+  }
+}

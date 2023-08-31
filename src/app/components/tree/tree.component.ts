@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
   MatTreeModule,
 } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,10 +16,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TodoItemFlatNode } from '../../model/todo-item-flat-node';
 import { TodoItemNode } from '../../model/todo-item-node';
 import { ChecklistDatabase } from '../../model/checklist-database';
+import { SelectedNodeService } from 'src/app/service/selected-node.service';
+import { Node } from 'src/app/model/node';
+import { StorageService } from 'src/app/service/storage.service';
+import { SidenavComponent } from '../sidenav/sidenav.component';
+import { Router } from '@angular/router';
 
-/**
- * @title Tree with checkboxes
- */
 @Component({
   selector: 'app-tree',
   templateUrl: 'tree.component.html',
@@ -54,7 +56,15 @@ export class TreeComponent {
 
   dataSource: MatTreeFlatDataSource<TodoItemNode, TodoItemFlatNode>;
 
-  constructor(private _database: ChecklistDatabase) {
+  sidenav: SidenavComponent;
+
+  constructor(
+    private _database: ChecklistDatabase,
+    private selectedNodeService: SelectedNodeService,
+    private storageService: StorageService,
+    private viewContainerRef: ViewContainerRef,
+    private router: Router
+  ) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
       this.getLevel,
@@ -73,6 +83,10 @@ export class TreeComponent {
     _database.dataChange.subscribe((data) => {
       this.dataSource.data = data;
     });
+
+    const _injector = this.viewContainerRef.parentInjector;
+    const _parent: SidenavComponent = _injector.get<SidenavComponent>(SidenavComponent); 
+    this.sidenav = _parent;
   }
 
   getLevel = (node: TodoItemFlatNode) => node.level;
@@ -136,7 +150,7 @@ export class TreeComponent {
     }
   }
 
-  insertNewSubCategory(node: TodoItemFlatNode) {
+  insertSubCategory(node: TodoItemFlatNode) {
     const parentNode = this.flatNodeMap.get(node);
     this._database.addSubCategory(parentNode!, '');
     this.treeControl.expand(node);
@@ -154,4 +168,31 @@ export class TreeComponent {
   clearTree() {
     this._database.clear();
   }
+
+  export() {
+    this._database.export().then((data) => {
+      this.downloadFile(data, 'data.json');
+    });
+  }
+
+  downloadFile(data: string, fileName: string) {
+    Filesystem.writeFile({
+      path: fileName,
+      data: data,
+      directory: Directory.Documents,
+      encoding: Encoding.UTF8,
+    }).then();
+  }
+
+  onNodeSelected(node: TodoItemFlatNode) {
+    this.storageService
+      .getSubCategory(this.getParentNode(node)!.item, node.item)
+      .then((data) => {
+        this.selectedNodeService.setSelectedNode(
+          new Node(this.getParentNode(node)!.item, data)
+        );
+      });
+      this.sidenav.toggle();
+      this.router.navigate(['/home']);
+    }
 }

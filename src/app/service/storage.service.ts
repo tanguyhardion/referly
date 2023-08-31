@@ -10,8 +10,8 @@ export class StorageService {
   private _storage: Storage | null = null;
 
   constructor(private storage: Storage) {
-    this.init().then(() => console.log('storage initialized'));
-    this.getRoot().then((data) => console.log(data));
+    this.init().then();
+    this.getRoot().then();
   }
 
   private async init() {
@@ -39,13 +39,37 @@ export class StorageService {
     return await this.set('root', root);
   }
 
+  async getItems(category: string, subCategory: SubCategory): Promise<Item[]> {
+    const root = await this.getRoot();
+    return root[category][subCategory.name].items;
+  }
+
+  async getItem(
+    category: string,
+    subCategory: string,
+    item: string
+  ): Promise<Item> {
+    const root = await this.getRoot();
+    return root[category][subCategory].items.find((i: Item) => i.name === item);
+  }
+
+  async getSubCategory(
+    category: string,
+    subCategory: string
+  ): Promise<SubCategory> {
+    const root = await this.getRoot();
+    return root[category][subCategory];
+  }
+
   async addSubCategory(
     category: string,
     subCategory: SubCategory
   ): Promise<any> {
-    const root = await this.getRoot();
-    root[category][subCategory.name] = subCategory.items;
-    return await this.set('root', root);
+    if (subCategory.name) {
+      const root = await this.getRoot();
+      root[category][subCategory.name] = subCategory;
+      return await this.set('root', root);
+    }
   }
 
   async removeSubCategory(category: string, subCategory: string): Promise<any> {
@@ -56,14 +80,19 @@ export class StorageService {
 
   async addItem(
     category: string,
-    subCategory: string,
+    subCategory: SubCategory,
     item: Item
   ): Promise<any> {
     const root = await this.getRoot();
-    if (!root[category][subCategory]) {
-      root[category][subCategory] = []; // Initialize the array
+    if (!root[category][subCategory.name]) {
+      root[category][subCategory.name] = subCategory;
     }
     return await this.set('root', root);
+  }
+
+  async export(): Promise<string> {
+    const root = await this.getRoot();
+    return JSON.stringify(root);
   }
 
   /* ------------- */
